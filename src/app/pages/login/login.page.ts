@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -36,6 +36,7 @@ export class LoginPage {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   loginForm: FormGroup;
   isLoading = false;
@@ -67,6 +68,7 @@ export class LoginPage {
       this.errorMessage = error?.message || 'Error al iniciar sesion. Verifique sus credenciales.';
     } finally {
       this.isLoading = false;
+      this.cdr.detectChanges();
     }
   }
 

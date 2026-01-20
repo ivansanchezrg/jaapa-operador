@@ -1,3 +1,7 @@
+/**
+ * Interfaces para medidores
+ */
+
 export interface Medidor {
   idMedidor: number;
   codigo: string;
@@ -21,16 +25,12 @@ export interface BuscarMedidorRequest {
   };
 }
 
-export interface BuscarMedidorResponse {
-  success: boolean;
-  message: string;
-  data: {
-    content: Medidor[];
-    totalElements: number;
-    totalPages: number;
-    currentPage: number;
-    pageSize: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
-  };
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }

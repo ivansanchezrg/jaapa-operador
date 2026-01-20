@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,6 +21,7 @@ import {
   IonFooter,
   AlertController,
   ToastController,
+  ViewWillEnter,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -68,7 +69,7 @@ import { Medidor } from '../../core/interfaces';
     IonFooter,
   ],
 })
-export class CapturaPage implements OnInit, OnDestroy {
+export class CapturaPage implements OnInit, OnDestroy, ViewWillEnter {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
@@ -78,6 +79,7 @@ export class CapturaPage implements OnInit, OnDestroy {
   private databaseService = inject(DatabaseService);
   private alertController = inject(AlertController);
   private toastController = inject(ToastController);
+  private cdr = inject(ChangeDetectorRef);
 
   capturaForm: FormGroup;
   isOnline = true;
@@ -122,6 +124,11 @@ export class CapturaPage implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  async ionViewWillEnter(): Promise<void> {
+    await this.actualizarContadorPendientes();
+    this.cdr.detectChanges();
+  }
+
   async buscarMedidor(): Promise<void> {
     const codigo = this.capturaForm.get('codigoMedidor')?.value?.trim();
     if (!codigo) return;
@@ -144,6 +151,7 @@ export class CapturaPage implements OnInit, OnDestroy {
       this.medidorError = error?.message || 'Error al buscar medidor';
     } finally {
       this.isSearching = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -170,7 +178,16 @@ export class CapturaPage implements OnInit, OnDestroy {
 
       if (result.sincronizado) {
         await this.mostrarToast('Lectura guardada y sincronizada', 'success');
+      } else if (result.error && result.reintentar === false) {
+        // Error de validacion del backend - eliminar registro local invalido
+        await this.databaseService.eliminarLectura(result.id);
+        await this.mostrarToast(result.error, 'danger');
+        return;
+      } else if (result.error && result.reintentar === true) {
+        // Error de conexion - mantener para reintentar despues
+        await this.mostrarToast('Guardada localmente. Se sincronizara cuando haya conexion.', 'warning');
       } else {
+        // Sin conexion detectada - guardada para sincronizar despues
         await this.mostrarToast('Lectura guardada localmente', 'warning');
       }
 
@@ -180,6 +197,7 @@ export class CapturaPage implements OnInit, OnDestroy {
       await this.mostrarToast(error?.message || 'Error al guardar lectura', 'danger');
     } finally {
       this.isSaving = false;
+      this.cdr.detectChanges();
     }
   }
 

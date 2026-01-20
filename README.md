@@ -88,6 +88,32 @@ export const environment = {
 };
 ```
 
+## Notas Importantes de Implementacion
+
+### Change Detection en Async
+Las operaciones async (login, buscar medidor, guardar lectura) requieren `ChangeDetectorRef.detectChanges()` en el `finally` block para que Angular actualice la UI correctamente.
+
+### Ciclo de Vida Ionic
+Usar `ionViewWillEnter` en lugar de `ngOnInit` para refrescar datos cuando se regresa a una pagina (ej: contador de pendientes).
+
+### Manejo de Errores de Sincronizacion
+- **Error de conexion** (`reintentar: true`): Mantiene el registro local para sincronizar despues
+- **Error de validacion** (`reintentar: false`): Elimina el registro local (ej: "lectura menor que anterior")
+
+### Almacenamiento Local
+- **Movil**: SQLite via `@capacitor-community/sqlite`
+- **Web (desarrollo)**: localStorage como fallback
+
+### Respuestas del Backend
+Todas las respuestas estan envueltas en `ApiResponse<T>`:
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T | null;
+}
+```
+
 ## Estado del Proyecto
 
 Ver `docs/PLAN_APP_OPERADOR.md` para el progreso detallado de implementacion.

@@ -88,8 +88,6 @@ export class SyncService {
       const mensaje = this.parseErrorMessage(error);
       const reintentar = !this.esErrorFinal(mensaje);
 
-      console.error(`Error sincronizando lectura ${lectura.id}:`, mensaje);
-
       return {
         success: false,
         error: mensaje,
@@ -98,7 +96,7 @@ export class SyncService {
     }
   }
 
-  async guardarYSincronizar(lectura: Omit<Lectura, 'id'>): Promise<{ id: number; sincronizado: boolean; error?: string }> {
+  async guardarYSincronizar(lectura: Omit<Lectura, 'id'>): Promise<{ id: number; sincronizado: boolean; error?: string; reintentar?: boolean }> {
     // Siempre guardar localmente primero
     const id = await this.databaseService.insertarLectura(lectura);
 
@@ -110,7 +108,8 @@ export class SyncService {
       return {
         id,
         sincronizado: result.success,
-        error: result.error
+        error: result.error,
+        reintentar: result.reintentar
       };
     }
 

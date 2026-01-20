@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent,
@@ -60,6 +60,7 @@ export class PendientesPage implements OnInit, OnDestroy {
   private networkService = inject(NetworkService);
   private syncService = inject(SyncService);
   private toastController = inject(ToastController);
+  private cdr = inject(ChangeDetectorRef);
 
   lecturas: Lectura[] = [];
   isOnline = true;
@@ -100,6 +101,7 @@ export class PendientesPage implements OnInit, OnDestroy {
       console.error('Error cargando lecturas:', error);
     } finally {
       this.isLoading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -144,6 +146,7 @@ export class PendientesPage implements OnInit, OnDestroy {
       await this.mostrarToast('Error al sincronizar', 'danger');
     } finally {
       this.isSyncing = false;
+      this.cdr.detectChanges();
     }
   }
 
