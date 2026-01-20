@@ -451,8 +451,8 @@ CREATE INDEX IF NOT EXISTS idx_sincronizado ON lecturas(sincronizado);
 ### Fase 5: Testing y Build
 - [x] Probar flujo offline completo (web)
 - [x] Probar sincronizacion (web)
-- [ ] Generar APK de prueba
-- [ ] Testing en dispositivo real
+- [x] Generar APK de prueba
+- [x] Testing en dispositivo real
 
 ### Fase 6: Produccion
 - [ ] Configurar firma de APK
@@ -652,4 +652,4 @@ Verificaciones completadas:
 
 ---
 
-**Estado Actual:** Fases 1-4 completadas. Flujo offline probado en desarrollo web. Siguiente: Fase 5 (Generar APK y testing en dispositivo real).
+**Estado Actual:** Fases 1-5 completadas. APK generado y probado en dispositivo real. Siguiente: Fase 6 (Configurar firma y APK release para produccion).

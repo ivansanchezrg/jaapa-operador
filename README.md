@@ -120,5 +120,8 @@ Ver `docs/PLAN_APP_OPERADOR.md` para el progreso detallado de implementacion.
 
 ## Documentacion
 
-- `docs/PLAN_APP_OPERADOR.md` - Plan de implementacion y checklist
-- `docs/GUIA_CONFIGURACION_PROYECTO.md` - Configuracion inicial detallada
+| Documento | Contenido |
+|-----------|-----------|
+| `docs/PLAN_APP_OPERADOR.md` | Plan de implementacion y checklist |
+| `docs/GUIA_BUILD_APK.md` | Pasos para generar APK y solución de errores |
+| `docs/GUIA_CONFIGURACION_PROYECTO.md` | Configuracion inicial detallada |
