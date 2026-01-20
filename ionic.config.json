@@ -1,0 +1,7 @@
+{
+  "name": "jaapa-operador",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
