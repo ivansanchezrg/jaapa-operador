@@ -429,20 +429,21 @@ CREATE INDEX IF NOT EXISTS idx_sincronizado ON lecturas(sincronizado);
 - [x] Agregar plataforma Android
 
 ### Fase 2: Core Services
-- [ ] Implementar DatabaseService (SQLite)
-- [ ] Implementar NetworkService (detectar conexion)
-- [ ] Implementar AuthService (login/sesion)
-- [ ] Implementar SyncService (sincronizacion)
-- [ ] Implementar MedidoresService (validar codigo)
+- [x] Implementar DatabaseService (SQLite)
+- [x] Implementar NetworkService (detectar conexion)
+- [x] Implementar AuthService (login/sesion)
+- [x] Implementar SyncService (sincronizacion)
+- [x] Implementar MedidoresService (validar codigo)
+- [x] Implementar AuthInterceptor (extra - manejo de tokens)
 
 ### Fase 3: Pantallas
-- [ ] Implementar LoginPage
-- [ ] Implementar CapturaPage (formulario principal)
-- [ ] Implementar PendientesPage (lista de lecturas)
-- [ ] Configurar navegacion y guards
+- [x] Implementar LoginPage
+- [x] Implementar CapturaPage (formulario principal)
+- [x] Implementar PendientesPage (lista de lecturas)
+- [x] Configurar navegacion y guards
 
 ### Fase 4: Integracion Backend
-- [ ] Conectar con endpoint de login
+- [x] Conectar con endpoint de login
 - [ ] Conectar con endpoint de validar medidor
 - [ ] Conectar con endpoint de registrar lectura
 - [ ] Implementar logica de reintento
@@ -573,4 +574,4 @@ Antes de implementar, verificar:
 
 ---
 
-**Estado Actual:** Fase 1 completada. Listo para iniciar Fase 2 (Core Services).
+**Estado Actual:** Fases 1, 2 y 3 completadas. Listo para iniciar Fase 4 (Integración Backend).

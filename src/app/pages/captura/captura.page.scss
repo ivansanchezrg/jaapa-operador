@@ -1,0 +1,66 @@
+.connection-status {
+  padding-right: 16px;
+
+  ion-icon {
+    font-size: 24px;
+  }
+}
+
+ion-item {
+  --background: var(--ion-color-light);
+  --border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.medidor-info {
+  margin: 12px 0;
+
+  ion-card-content {
+    padding: 12px;
+  }
+
+  .medidor-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 8px;
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+
+  .medidor-details {
+    p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+  }
+}
+
+.guardar-button {
+  margin-top: 24px;
+  --border-radius: 8px;
+  height: 48px;
+
+  ion-spinner {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+ion-footer {
+  ion-toolbar {
+    --background: var(--ion-color-light);
+  }
+
+  ion-button {
+    --color: var(--ion-color-primary);
+    font-weight: 500;
+  }
+
+  ion-badge {
+    margin-left: 8px;
+  }
+}

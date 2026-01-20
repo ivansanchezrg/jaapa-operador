@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(dir /b C:UsersivanDesktopjaapajaapa-operador*.md)",
+      "Bash(dir C:UsersivanDesktopjaapajaapa-operador /b)"
+    ]
+  }
+}

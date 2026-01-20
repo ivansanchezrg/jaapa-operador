@@ -1,0 +1,73 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <div class="logo-section">
+      <h1>JAAPA</h1>
+      <p>Sistema de Lectura de Medidores</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <ion-item>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-input
+          formControlName="cedula"
+          type="text"
+          label="Cedula"
+          labelPlacement="floating"
+          placeholder="Ingrese su cedula"
+          maxlength="10"
+          inputmode="numeric"
+        ></ion-input>
+      </ion-item>
+      @if (cedula?.touched && cedula?.errors) {
+        <ion-text color="danger" class="error-text">
+          @if (cedula?.errors?.['required']) {
+            <span>La cedula es requerida</span>
+          }
+          @if (cedula?.errors?.['minlength'] || cedula?.errors?.['maxlength']) {
+            <span>La cedula debe tener 10 digitos</span>
+          }
+        </ion-text>
+      }
+
+      <ion-item>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-input
+          formControlName="password"
+          type="password"
+          label="Contrasena"
+          labelPlacement="floating"
+          placeholder="Ingrese su contrasena"
+        ></ion-input>
+      </ion-item>
+      @if (password?.touched && password?.errors) {
+        <ion-text color="danger" class="error-text">
+          @if (password?.errors?.['required']) {
+            <span>La contrasena es requerida</span>
+          }
+          @if (password?.errors?.['minlength']) {
+            <span>Minimo 4 caracteres</span>
+          }
+        </ion-text>
+      }
+
+      @if (errorMessage) {
+        <ion-text color="danger" class="error-message">
+          <p>{{ errorMessage }}</p>
+        </ion-text>
+      }
+
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="isLoading"
+        class="login-button"
+      >
+        @if (isLoading) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          INGRESAR
+        }
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

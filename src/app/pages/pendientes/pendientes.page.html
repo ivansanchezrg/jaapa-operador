@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/captura"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Lecturas</ion-title>
+    <div slot="end" class="connection-status">
+      @if (isOnline) {
+        <ion-icon name="cloud-done-outline" color="success"></ion-icon>
+      } @else {
+        <ion-icon name="cloud-offline-outline" color="warning"></ion-icon>
+      }
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Resumen -->
+  <div class="resumen">
+    <div class="stat">
+      <ion-icon name="time-outline" color="warning"></ion-icon>
+      <span>{{ pendientesCount }} pendientes</span>
+    </div>
+    <div class="stat">
+      <ion-icon name="checkmark-circle" color="success"></ion-icon>
+      <span>{{ sincronizadasCount }} sincronizadas</span>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando lecturas...</p>
+    </div>
+  } @else if (lecturas.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+      <p>No hay lecturas registradas</p>
+    </div>
+  } @else {
+    <ion-list>
+      @for (lectura of lecturas; track lectura.id) {
+        <ion-item>
+          <div class="lectura-content">
+            <div class="lectura-header">
+              <strong>{{ lectura.codigoMedidor }}</strong>
+              @if (lectura.sincronizado) {
+                <ion-badge color="success">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                  Sincronizado
+                </ion-badge>
+              } @else {
+                <ion-badge color="warning">
+                  <ion-icon name="time-outline"></ion-icon>
+                  Pendiente
+                </ion-badge>
+              }
+            </div>
+            <div class="lectura-details">
+              <p>Lectura: <strong>{{ lectura.lectura }} kWh</strong></p>
+              <p class="fecha">{{ formatFecha(lectura.fechaHora) }}</p>
+              @if (lectura.observacion) {
+                <p class="observacion">{{ lectura.observacion }}</p>
+              }
+            </div>
+          </div>
+        </ion-item>
+      }
+    </ion-list>
+  }
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+      expand="block"
+      (click)="sincronizarTodas()"
+      [disabled]="!isOnline || isSyncing || pendientesCount === 0"
+    >
+      @if (isSyncing) {
+        <ion-spinner name="crescent"></ion-spinner>
+        <span>Sincronizando...</span>
+      } @else {
+        <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+        SINCRONIZAR TODO ({{ pendientesCount }})
+      }
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
