@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package ec.jaapa.operador;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -1,0 +1,130 @@
+.connection-status {
+  padding-right: 16px;
+
+  ion-icon {
+    font-size: 24px;
+  }
+}
+
+.resumen {
+  display: flex;
+  justify-content: space-around;
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-bottom: 1px solid var(--ion-color-medium-tint);
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--ion-color-dark);
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--ion-color-medium);
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+}
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+}
+
+.lectura-content {
+  width: 100%;
+
+  .lectura-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    strong {
+      font-size: 16px;
+    }
+
+    ion-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      padding: 4px 8px;
+
+      ion-icon {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .lectura-details {
+    p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: var(--ion-color-dark);
+    }
+
+    .fecha {
+      color: var(--ion-color-medium);
+      font-size: 12px;
+    }
+
+    .observacion {
+      font-style: italic;
+      color: var(--ion-color-medium);
+      font-size: 13px;
+    }
+  }
+}
+
+ion-footer {
+  ion-toolbar {
+    padding: 8px 16px;
+  }
+
+  ion-button {
+    --border-radius: 8px;
+    height: 48px;
+
+    ion-spinner {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+  }
+}

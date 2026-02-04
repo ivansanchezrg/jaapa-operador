@@ -429,29 +429,30 @@ CREATE INDEX IF NOT EXISTS idx_sincronizado ON lecturas(sincronizado);
 - [x] Agregar plataforma Android
 
 ### Fase 2: Core Services
-- [ ] Implementar DatabaseService (SQLite)
-- [ ] Implementar NetworkService (detectar conexion)
-- [ ] Implementar AuthService (login/sesion)
-- [ ] Implementar SyncService (sincronizacion)
-- [ ] Implementar MedidoresService (validar codigo)
+- [x] Implementar DatabaseService (SQLite)
+- [x] Implementar NetworkService (detectar conexion)
+- [x] Implementar AuthService (login/sesion)
+- [x] Implementar SyncService (sincronizacion)
+- [x] Implementar MedidoresService (validar codigo)
+- [x] Implementar AuthInterceptor (extra - manejo de tokens)
 
 ### Fase 3: Pantallas
-- [ ] Implementar LoginPage
-- [ ] Implementar CapturaPage (formulario principal)
-- [ ] Implementar PendientesPage (lista de lecturas)
-- [ ] Configurar navegacion y guards
+- [x] Implementar LoginPage
+- [x] Implementar CapturaPage (formulario principal)
+- [x] Implementar PendientesPage (lista de lecturas)
+- [x] Configurar navegacion y guards
 
 ### Fase 4: Integracion Backend
-- [ ] Conectar con endpoint de login
-- [ ] Conectar con endpoint de validar medidor
-- [ ] Conectar con endpoint de registrar lectura
-- [ ] Implementar logica de reintento
+- [x] Conectar con endpoint de login
+- [x] Conectar con endpoint de validar medidor
+- [x] Conectar con endpoint de registrar lectura
+- [x] Implementar logica de reintento
 
 ### Fase 5: Testing y Build
-- [ ] Probar flujo offline completo
-- [ ] Probar sincronizacion
-- [ ] Generar APK de prueba
-- [ ] Testing en dispositivo real
+- [x] Probar flujo offline completo (web)
+- [x] Probar sincronizacion (web)
+- [x] Generar APK de prueba
+- [x] Testing en dispositivo real
 
 ### Fase 6: Produccion
 - [ ] Configurar firma de APK
@@ -533,34 +534,112 @@ async sincronizarLectura(lectura: Lectura): Promise<SyncResult> {
 
 ---
 
-## 10. Consideraciones Adicionales
+## 10. Notas Tecnicas de Implementacion
 
-### Seguridad
-- Guardar token JWT en Preferences (encriptado)
-- Validar sesion al abrir app
-- Timeout de sesion configurable
+### 10.1 Change Detection en Angular + Ionic
 
-### UX Offline
-- Indicador visual de estado de conexion
-- Badge con contador de pendientes
-- Notificacion al recuperar conexion
+Las operaciones async no activan automaticamente el change detection de Angular. Solucion:
 
-### Performance
-- Limite de lecturas en memoria
-- Paginacion en lista de pendientes
-- Limpiar lecturas sincronizadas antiguas
+```typescript
+import { ChangeDetectorRef } from '@angular/core';
+
+private cdr = inject(ChangeDetectorRef);
+
+async operacionAsync(): Promise<void> {
+  try {
+    // operacion async
+  } finally {
+    this.cdr.detectChanges(); // Forzar actualizacion de UI
+  }
+}
+```
+
+**Afecta a:** `LoginPage`, `CapturaPage`, `PendientesPage`
+
+### 10.2 Ciclo de Vida Ionic vs Angular
+
+`ngOnInit` solo se ejecuta una vez. Para refrescar datos al volver a una pagina usar `ionViewWillEnter`:
+
+```typescript
+import { ViewWillEnter } from '@ionic/angular/standalone';
+
+export class CapturaPage implements ViewWillEnter {
+  ionViewWillEnter(): void {
+    this.actualizarContadorPendientes(); // Se ejecuta cada vez que la pagina se muestra
+  }
+}
+```
+
+### 10.3 Logica de Reintento en Sincronizacion
+
+| Tipo de Error | `reintentar` | Accion |
+|---------------|--------------|--------|
+| Conexion (backend caido, sin red) | `true` | Mantener en pendientes |
+| Validacion (lectura menor, medidor inactivo) | `false` | Eliminar registro local |
+
+```typescript
+// sync.service.ts
+const ERRORES_NO_REINTENTABLES = [
+  'Medidor no encontrado',
+  'El medidor no esta activo',
+  'Operador no autorizado',
+  'no puede ser menor'
+];
+```
+
+### 10.4 Wrapper ApiResponse del Backend
+
+Todas las respuestas del backend estan envueltas:
+
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T | null;
+}
+
+// Uso correcto
+const apiResponse = await http.post<ApiResponse<AuthResponse>>(url, body);
+if (!apiResponse.success || !apiResponse.data) {
+  throw new Error(apiResponse.message);
+}
+const data = apiResponse.data; // Datos reales
+```
+
+### 10.5 Validacion de Rol Operador
+
+El backend puede devolver el rol como `"OPERADOR"` o `"ROLE_OPERADOR"`. Validar ambos:
+
+```typescript
+private hasOperadorRole(userInfo: UserInfo): boolean {
+  return userInfo.roles.some(role =>
+    role === 'OPERADOR' || role === 'ROLE_OPERADOR'
+  );
+}
+```
+
+### 10.6 Almacenamiento Local
+
+| Plataforma | Storage | Plugin |
+|------------|---------|--------|
+| Android/iOS | SQLite | `@capacitor-community/sqlite` |
+| Web (desarrollo) | localStorage | Fallback en `DatabaseService` |
+
+El `DatabaseService` detecta la plataforma y usa el storage apropiado automaticamente.
 
 ---
 
 ## 11. Checklist de Compatibilidad
 
-Antes de implementar, verificar:
+Verificaciones completadas:
 
-- [ ] El rol `ROLE_OPERADOR` existe en el sistema
-- [ ] Los operadores tienen asignado el rol
-- [ ] Backend tiene `POST /lecturas` implementado
-- [ ] Medidores de prueba tienen estado `ACTIVO`
-- [ ] Existe medidor con lecturas previas para probar
+- [x] El rol `OPERADOR` existe en el sistema
+- [x] Los operadores tienen asignado el rol
+- [x] Backend tiene `POST /lecturas` implementado
+- [x] Medidores de prueba tienen estado `ACTIVO`
+- [x] Existe medidor con lecturas previas para probar
+- [x] Backend devuelve respuestas en formato `ApiResponse<T>`
+- [x] Permisos de endpoint `/medidores/buscar` para rol OPERADOR
 
 ---
 
@@ -573,4 +652,4 @@ Antes de implementar, verificar:
 
 ---
 
-**Estado Actual:** Fase 1 completada. Listo para iniciar Fase 2 (Core Services).
+**Estado Actual:** Fases 1-5 completadas. APK generado y probado en dispositivo real. Siguiente: Fase 6 (Configurar firma y APK release para produccion).
